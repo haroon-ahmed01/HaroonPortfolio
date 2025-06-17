@@ -1,0 +1,22 @@
+{
+  "name": "haroon-portfolio-server",
+  "version": "1.0.0",
+  "description": "Backend server for Haroon Ahmed's portfolio website",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "nodemailer": "^6.9.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "keywords": ["portfolio", "express", "nodejs", "email"],
+  "author": "Haroon Ahmed",
+  "license": "MIT"
+}
