@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, FileText, Eye } from 'lucide-react';
 import './Resume.css';
@@ -11,7 +11,7 @@ const Resume = () => {
       .then(res => res.json())
       .then(data => setResumeURL(data.resumeURL))
       .catch(() => {
-        setResumeURL('/files/Haroon_Ahmed_Resume.pdf');
+        setResumeURL("https://drive.google.com/file/d/1SNkwxNiTFcaRwcYprkhUh59NcLKdOHZO/view?usp=sharing");
       });
   }, []);
 

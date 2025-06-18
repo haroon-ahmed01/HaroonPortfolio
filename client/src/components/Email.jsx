@@ -43,7 +43,7 @@ const Email = () => {
       }
     } catch (error) {
       setStatus("error");
-      setMessage("Network error. Please check your connection and try again.");
+      setMessage("Could not connect to the server. Please try again later or email me directly at haroonahmedthedev@gmail.com");
     }
 
     // Reset status after 5 seconds

@@ -40,7 +40,7 @@ const Home = () => {
         setHomeData({
           name: "Haroon Ahmed",
           role: "Full Stack Developer (MERN / Python)",
-          bannerImage: "/api/placeholder/400/400"
+          bannerImage: "https://via.placeholder.com/400"
         });
       });
   }, []);
