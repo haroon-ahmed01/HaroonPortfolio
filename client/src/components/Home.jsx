@@ -7,10 +7,9 @@ import Projects from './Projects';
 import Resume from './Resume';
 import Email from './Email';
 import './Home.css';
-// import portfolioBanner from '../assets/portfolioBanner.jpeg'; 
-const banner = '/portfolioBanner.jpeg'
 
 const Home = () => {
+  const banner = '/portfolioBanner.jpeg'
   const [showLoading, setShowLoading] = useState(() => !window.location.hash);
   const [showCartoon, setShowCartoon] = useState(false);
   const [showReal, setShowReal] = useState(() => !!window.location.hash);
@@ -18,7 +17,7 @@ const Home = () => {
     name: "Haroon Ahmed",
     role: "Full Stack Developer (MERN / Python)",
     bannerImage: banner,
-    fallbackImage: "https://images.pexels.com/photos/4974912/pexels-photo-4974912.jpeg?auto=compress&cs=tinysrgb&w=400"
+    // fallbackImage: "https://images.pexels.com/photos/4974912/pexels-photo-4974912.jpeg?auto=compress&cs=tinysrgb&w=400"
   });
   const [imageError, setImageError] = useState(false);
 
