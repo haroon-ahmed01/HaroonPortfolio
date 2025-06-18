@@ -9,38 +9,81 @@ const PORT = process.env.PORT || 5000;
 const backendUrl = process.env.BACKEND_URL || `http://localhost:${PORT}`;
 console.log("BACKEND URL:", backendUrl);
 
-
 // -------------------- MIDDLEWARE --------------------
 
 // Enable Cross-Origin Resource Sharing
 const allowedOrigins = [
   process.env.FRONTEND_URL,
-  process.env.FRONTEND_URL.replace('https://', 'https://www.'),
-  "http://localhost:5173"   
-];
-
+  process.env.FRONTEND_URL?.replace('https://', 'https://www.'),
+  "http://localhost:5173",
+  "http://localhost:3000" // Add common dev ports
+].filter(Boolean); // Remove undefined values
 
 app.use(
   cors({
-    origin: allowedOrigins,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(null, true); // Allow all origins for static files in production
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With']
   })
 );
+
 // Parse JSON request bodies
 app.use(express.json());
 
+// Add global CORS headers for all routes
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, Origin, X-Requested-With');
+  
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
 // -------------------- STATIC FILE SERVING --------------------
 
-// Serve images like portfolioBanner.jpeg from the 'utils' folder
-app.use('/utils', express.static(path.join(__dirname, 'utils')));
+// Serve images from the 'utils' folder with proper headers
+app.use('/utils', express.static(path.join(__dirname, 'utils'), {
+  setHeaders: (res, path, stat) => {
+    res.set({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET',
+      'Cache-Control': 'public, max-age=86400', // Cache for 1 day
+      'Content-Type': path.endsWith('.jpeg') || path.endsWith('.jpg') ? 'image/jpeg' : 
+                     path.endsWith('.png') ? 'image/png' : 'application/octet-stream'
+    });
+  }
+}));
 
-// Serve resume PDF from the 'public/files' folder
-app.use('/files', express.static(path.join(__dirname, 'public/files')));
+// Serve resume PDF from the 'public/files' folder with proper headers
+app.use('/files', express.static(path.join(__dirname, 'public/files'), {
+  setHeaders: (res, path, stat) => {
+    res.set({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET',
+      'Cache-Control': 'public, max-age=86400', // Cache for 1 day
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'inline; filename="Haroon_Ahmed_Resume.pdf"'
+    });
+  }
+}));
 
 // -------------------- EMAIL CONFIGURATION --------------------
 
-// Create nodemailer transporter
+// Create nodemailer transporter - FIXED: createTransport (not createTransporter)
 const transporter = nodemailer.createTransport({
   service: 'gmail', // You can change this to your email provider
   auth: {
@@ -51,12 +94,28 @@ const transporter = nodemailer.createTransport({
 
 // -------------------- API ROUTES --------------------
 
-// Home API - basic profile info
+// Add this debug route to check your environment
+app.get('/api/debug', (req, res) => {
+  res.json({
+    BACKEND_URL: process.env.BACKEND_URL,
+    FRONTEND_URL: process.env.FRONTEND_URL,
+    NODE_ENV: process.env.NODE_ENV,
+    imagePath: `${backendUrl}/utils/portfolioBanner.jpeg`,
+    resumePath: `${backendUrl}/files/Haroon_Ahmed_Resume.pdf`
+  });
+});
+
+// Home API - basic profile info with fallback image
 app.get('/api/home', (req, res) => {
+  // Use a professional stock photo from Pexels as fallback
+  const fallbackImage = "https://images.pexels.com/photos/4974912/pexels-photo-4974912.jpeg?auto=compress&cs=tinysrgb&w=400";
+  const profileImage = `${backendUrl}/utils/portfolioBanner.jpeg`;
+  
   res.json({
     name: "Haroon Ahmed",
     role: "Full Stack Developer (MERN / Python)",
-    bannerImage: `${process.env.BACKEND_URL}/utils/portfolioBanner.jpeg`
+    bannerImage: profileImage,
+    fallbackImage: fallbackImage
   });
 });
 
@@ -102,10 +161,15 @@ app.get('/api/projects', (req, res) => {
   ]);
 });
 
-// Resume API - return resume URL
+// Resume API - return resume URL with fallback
 app.get('/api/resume', (req, res) => {
+  const resumeURL = `${backendUrl}/files/Haroon_Ahmed_Resume.pdf`;
+  const fallbackURL = "https://drive.google.com/file/d/1SNkwxNiTFcaRwcYprkhUh59NcLKdOHZO/view?usp=sharing";
+  
   res.json({
-    resumeURL: `${process.env.BACKEND_URL}/files/Haroon_Ahmed_Resume.pdf`
+    resumeURL: resumeURL,
+    fallbackURL: fallbackURL,
+    directDownload: `${backendUrl}/files/Haroon_Ahmed_Resume.pdf?download=true`
   });
 });
 
@@ -211,15 +275,30 @@ app.get('/', (req, res) => {
   res.json({ message: 'Portfolio API is running!' });
 });
 
-
+// Test image route
 app.get('/test-image', (req, res) => {
-  res.sendFile(path.join(__dirname, 'utils', 'portfolioBanner.jpeg'));
+  const imagePath = path.join(__dirname, 'utils', 'portfolioBanner.jpeg');
+  res.sendFile(imagePath, (err) => {
+    if (err) {
+      res.status(404).json({ error: 'Image not found' });
+    }
+  });
 });
 
+// Test resume route  
+app.get('/test-resume', (req, res) => {
+  const resumePath = path.join(__dirname, 'public', 'files', 'Haroon_Ahmed_Resume.pdf');
+  res.sendFile(resumePath, (err) => {
+    if (err) {
+      res.status(404).json({ error: 'Resume not found' });
+    }
+  });
+});
 
 // -------------------- START SERVER --------------------
 app.listen(PORT, () => {
   console.log(`✅ Server running at: http://localhost:${PORT}`);
   console.log(`📧 Email service configured`);
   console.log(`📁 Static files served from utils and public/files`);
+  console.log(`🔗 Backend URL: ${backendUrl}`);
 });
