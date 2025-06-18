@@ -14,7 +14,8 @@ console.log("BACKEND URL:", backendUrl);
 
 // Enable Cross-Origin Resource Sharing
 const allowedOrigins = [
-  process.env.FRONTEND_URL, 
+  process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL.replace('https://', 'https://www.'),
   "http://localhost:5173"   
 ];
 
@@ -55,7 +56,7 @@ app.get('/api/home', (req, res) => {
   res.json({
     name: "Haroon Ahmed",
     role: "Full Stack Developer (MERN / Python)",
-    bannerImage: `${backendUrl}/utils/portfolioBanner.jpeg`
+    bannerImage: `${process.env.BACKEND_URL}/utils/portfolioBanner.jpeg`
   });
 });
 
@@ -104,7 +105,7 @@ app.get('/api/projects', (req, res) => {
 // Resume API - return resume URL
 app.get('/api/resume', (req, res) => {
   res.json({
-    resumeURL: `${backendUrl}/files/Haroon_Ahmed_Resume.pdf`
+    resumeURL: `${process.env.BACKEND_URL}/files/Haroon_Ahmed_Resume.pdf`
   });
 });
 
