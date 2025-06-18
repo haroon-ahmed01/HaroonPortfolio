@@ -7,7 +7,7 @@ import Projects from './Projects';
 import Resume from './Resume';
 import Email from './Email';
 import './Home.css';
-import banner from '/portfolioBanner.jpeg';
+import banner from '../assets/banner.jpeg';
 
 
 const Home = () => {
