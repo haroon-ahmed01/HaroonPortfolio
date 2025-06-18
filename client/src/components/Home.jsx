@@ -7,9 +7,10 @@ import Projects from './Projects';
 import Resume from './Resume';
 import Email from './Email';
 import './Home.css';
+import banner from '/portfolioBanner.jpeg';
+
 
 const Home = () => {
-  const banner = '/portfolioBanner.jpeg'
   const [showLoading, setShowLoading] = useState(() => !window.location.hash);
   const [showCartoon, setShowCartoon] = useState(false);
   const [showReal, setShowReal] = useState(() => !!window.location.hash);
