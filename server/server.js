@@ -6,14 +6,18 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const backendUrl = process.env.BACKEND_URL || `http://localhost:${PORT}`;
+console.log("BACKEND URL:", backendUrl);
+
 
 // -------------------- MIDDLEWARE --------------------
 
 // Enable Cross-Origin Resource Sharing
 const allowedOrigins = [
   process.env.FRONTEND_URL, 
-  // "http://localhost:5173"
+  "http://localhost:5173"   
 ];
+
 
 app.use(
   cors({
@@ -51,7 +55,7 @@ app.get('/api/home', (req, res) => {
   res.json({
     name: "Haroon Ahmed",
     role: "Full Stack Developer (MERN / Python)",
-    bannerImage: `http://localhost:${PORT}/utils/portfolioBanner.jpeg`
+    bannerImage: `${backendUrl}/utils/portfolioBanner.jpeg`
   });
 });
 
@@ -100,7 +104,7 @@ app.get('/api/projects', (req, res) => {
 // Resume API - return resume URL
 app.get('/api/resume', (req, res) => {
   res.json({
-    resumeURL: `http://localhost:${PORT}/files/Haroon_Ahmed_Resume.pdf`
+    resumeURL: `${backendUrl}/files/Haroon_Ahmed_Resume.pdf`
   });
 });
 
@@ -205,6 +209,12 @@ app.post('/api/send-email', async (req, res) => {
 app.get('/', (req, res) => {
   res.json({ message: 'Portfolio API is running!' });
 });
+
+
+app.get('/test-image', (req, res) => {
+  res.sendFile(path.join(__dirname, 'utils', 'portfolioBanner.jpeg'));
+});
+
 
 // -------------------- START SERVER --------------------
 app.listen(PORT, () => {
