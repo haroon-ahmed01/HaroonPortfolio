@@ -7,7 +7,6 @@ import Projects from './Projects';
 import Resume from './Resume';
 import Email from './Email';
 import './Home.css';
-import banner from '../assets/banner.jpeg';
 
 
 const Home = () => {
@@ -17,7 +16,7 @@ const Home = () => {
   const [homeData, setHomeData] = useState({
     name: "Haroon Ahmed",
     role: "Full Stack Developer (MERN / Python)",
-    bannerImage: banner,
+    bannerImage: "/banner.jpeg",
     // fallbackImage: "https://images.pexels.com/photos/4974912/pexels-photo-4974912.jpeg?auto=compress&cs=tinysrgb&w=400"
   });
   const [imageError, setImageError] = useState(false);
