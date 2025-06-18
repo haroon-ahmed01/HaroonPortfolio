@@ -15,7 +15,7 @@ const About = () => {
   const [aboutData, setAboutData] = useState("");
 
   useEffect(() => {
-    fetch("/api/about")
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/about`)
       .then((res) => res.json())
       .then((data) => setAboutData(data.about))
       .catch(() => {

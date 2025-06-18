@@ -7,7 +7,7 @@ const Resume = () => {
   const [resumeURL, setResumeURL] = useState('');
 
   useEffect(() => {
-    fetch('/api/resume')
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/resume`)
       .then(res => res.json())
       .then(data => setResumeURL(data.resumeURL))
       .catch(() => {

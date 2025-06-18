@@ -33,7 +33,7 @@ const Home = () => {
     }
 
     // Fetch data
-    fetch('/api/home')
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/home`)
       .then(res => res.json())
       .then(data => setHomeData(data))
       .catch(() => {

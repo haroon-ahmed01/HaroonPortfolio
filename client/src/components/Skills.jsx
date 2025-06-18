@@ -7,7 +7,7 @@ const Skills = () => {
   const [skillsData, setSkillsData] = useState({});
 
   useEffect(() => {
-    fetch('/api/skills')
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/skills`)
       .then(res => res.json())
       .then(data => setSkillsData(data))
       .catch(() => {

@@ -7,7 +7,7 @@ const Projects = () => {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    fetch('/api/projects')
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/projects`)
       .then(res => res.json())
       .then(data => setProjects(data))
       .catch(() => {
