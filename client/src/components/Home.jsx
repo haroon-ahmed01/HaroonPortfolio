@@ -7,7 +7,8 @@ import Projects from './Projects';
 import Resume from './Resume';
 import Email from './Email';
 import './Home.css';
-import portfolioBanner from '../assets/portfolioBanner.jpeg'; // Local image import
+// import portfolioBanner from '../assets/portfolioBanner.jpeg'; 
+const banner = '/portfolioBanner.jpeg'
 
 const Home = () => {
   const [showLoading, setShowLoading] = useState(() => !window.location.hash);
@@ -16,7 +17,7 @@ const Home = () => {
   const [homeData, setHomeData] = useState({
     name: "Haroon Ahmed",
     role: "Full Stack Developer (MERN / Python)",
-    bannerImage: portfolioBanner,
+    bannerImage: banner,
     fallbackImage: "https://images.pexels.com/photos/4974912/pexels-photo-4974912.jpeg?auto=compress&cs=tinysrgb&w=400"
   });
   const [imageError, setImageError] = useState(false);
