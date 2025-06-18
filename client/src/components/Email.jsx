@@ -21,29 +21,72 @@ const Email = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus("loading");
+    setMessage("");
+
+    // Client-side validation
+    if (!formData.name.trim() || !formData.email.trim()) {
+      setStatus("error");
+      setMessage("Please fill in all fields.");
+      setTimeout(() => {
+        setStatus("idle");
+        setMessage("");
+      }, 3000);
+      return;
+    }
+
+    if (formData.name.trim().length < 2) {
+      setStatus("error");
+      setMessage("Name must be at least 2 characters long.");
+      setTimeout(() => {
+        setStatus("idle");
+        setMessage("");
+      }, 3000);
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email.trim())) {
+      setStatus("error");
+      setMessage("Please enter a valid email address.");
+      setTimeout(() => {
+        setStatus("idle");
+        setMessage("");
+      }, 3000);
+      return;
+    }
 
     try {
+      console.log('Sending email with data:', formData);
+      console.log('Backend URL:', import.meta.env.VITE_BACKEND_URL);
+      
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/send-email`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim()
+        }),
       });
 
+      console.log('Response status:', response.status);
+      
       const result = await response.json();
+      console.log('Response data:', result);
 
-      if (response.ok) {
+      if (response.ok && result.success) {
         setStatus("success");
-        setMessage("Thank you! Your message has been sent successfully.");
+        setMessage(result.message || "Thank you! Your message has been sent successfully.");
         setFormData({ name: "", email: "" });
       } else {
         setStatus("error");
         setMessage(result.message || "Something went wrong. Please try again.");
       }
     } catch (error) {
+      console.error('Network error:', error);
       setStatus("error");
-      setMessage("Could not connect to the server. Please try again later or email me directly at haroonahmedthedev@gmail.com");
+      setMessage("Network error. Please check your connection and try again.");
     }
 
     // Reset status after 5 seconds
@@ -81,10 +124,6 @@ const Email = () => {
         animate="visible"
       >
         <motion.div className="email-header" variants={itemVariants}>
-          {/* <div className="section-badge">
-            <Mail size={16} />
-            <span>Get In Touch</span>
-          </div> */}
           <h1>Let's Connect!</h1>
           <p className="email-subtitle">
             I'd love to hear from you. Send me a message and I'll get back to
@@ -105,6 +144,8 @@ const Email = () => {
                 required
                 placeholder="Enter your full name"
                 disabled={status === "loading"}
+                minLength={2}
+                maxLength={100}
               />
             </div>
 
@@ -119,6 +160,7 @@ const Email = () => {
                 required
                 placeholder="Enter your email address"
                 disabled={status === "loading"}
+                maxLength={255}
               />
             </div>
 
