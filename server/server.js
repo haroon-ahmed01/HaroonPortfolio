@@ -48,7 +48,7 @@ app.get('/api/home', (req, res) => {
 // About API - personal introduction
 app.get('/api/about', (req, res) => {
   res.json({
-    about: "I'm a passionate full stack developer with experience in React, Node.js, Django, and machine learning projects. Currently pursuing MCA and worked on real-world projects like Qirat and InventoHub."
+    about: `My interest in software development began during my college days, and it gradually grew from a simple curiosity into a clear goal — to one day build my own SaaS product. To achieve that, I started learning full stack web development and applied my skills through internships, where I gained valuable hands-on experience in real-world software projects. Now, I am looking to join a team that values learning, creativity, and innovation — a place where I can grow while contributing meaningfully.`
   });
 });
 

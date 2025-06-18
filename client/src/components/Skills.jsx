@@ -82,10 +82,10 @@ const Skills = () => {
         animate="visible"
       >
         <motion.div className="skills-header" variants={itemVariants}>
-          <div className="section-badge">
+          {/* <div className="section-badge">
             <Brain size={16} />
             <span>My Skills</span>
-          </div>
+          </div> */}
           <h1>Technical Expertise</h1>
           <p className="skills-subtitle">
             Technologies and tools I use to bring ideas to life

@@ -1,20 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Code, Coffee, Heart } from 'lucide-react';
+import About from './About';
+import Skills from './Skills';
+import Projects from './Projects';
+import Resume from './Resume';
+import Email from './Email';
 import './Home.css';
 
 const Home = () => {
-  const [showLoading, setShowLoading] = useState(true);
+  const [showLoading, setShowLoading] = useState(() => {
+    // Check if there's a hash on initial load
+    return !window.location.hash;
+  });
   const [showCartoon, setShowCartoon] = useState(false);
-  const [showReal, setShowReal] = useState(false);
+  const [showReal, setShowReal] = useState(() => {
+    // If there's a hash, start with real content
+    return !!window.location.hash;
+  });
   const [homeData, setHomeData] = useState({});
 
   useEffect(() => {
-    // Show loading animation first
-    setTimeout(() => {
-      setShowLoading(false);
-      setShowCartoon(true);
-    }, 2000);
+    // Check if there's a hash in URL (coming from another page)
+    const hasHash = window.location.hash;
+    
+    if (!hasHash) {
+      // Only show animations if no hash (normal first visit)
+      setTimeout(() => {
+        setShowLoading(false);
+        setShowCartoon(true);
+      }, 2000);
+    }
 
     // Fetch data
     fetch('/api/home')
@@ -29,16 +45,55 @@ const Home = () => {
       });
   }, []);
 
+  // Handle hash navigation when component loads
+  useEffect(() => {
+    const hash = window.location.hash.substring(1); // Remove the '#'
+    if (hash) {
+      // Ensure we're showing real content
+      if (!showReal) {
+        setShowLoading(false);
+        setShowCartoon(false);
+        setShowReal(true);
+      }
+      
+      // Scroll to section after a brief delay
+      const scrollToSection = () => {
+        const element = document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+          // Clear the hash from URL after navigation
+          setTimeout(() => {
+            window.history.replaceState(null, null, '/');
+          }, 1000);
+        }
+      };
+      
+      // If content is already showing, scroll immediately
+      if (showReal) {
+        setTimeout(scrollToSection, 100);
+      } else {
+        // Wait for content to show
+        setTimeout(scrollToSection, 500);
+      }
+    }
+  }, [showReal]);
+
   const handleCartoonClick = () => {
     setShowCartoon(false);
     setTimeout(() => setShowReal(true), 500);
   };
 
-  const scrollToContent = () => {
-    window.scrollTo({
-      top: window.innerHeight,
-      behavior: 'smooth'
-    });
+  const scrollToAbout = () => {
+    const aboutSection = document.getElementById('about');
+    if (aboutSection) {
+      aboutSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
   };
 
   return (
@@ -123,8 +178,7 @@ const Home = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
               >
-                <p>Hi! How are you doing? Thanks for visiting.</p>
-                <p><strong>Click me to know more about me!</strong></p>
+                <p><strong>Glad to have you here — tap to begin.</strong></p>
                 <div className="bubble-arrow"></div>
               </motion.div>
             </div>
@@ -139,121 +193,113 @@ const Home = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="hero-content">
-              <motion.div
-                className="profile-section"
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                <div className="profile-image">
-                  <img src={homeData.bannerImage} alt="Haroon Ahmed" />
-                  <div className="image-overlay"></div>
-                </div>
-              </motion.div>
-
-              <motion.div
-                className="intro-section"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 }}
-              >
-                <motion.h1
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7 }}
-                >
-                  Hi, I'm <span className="name-highlight">{homeData.name}</span>
-                </motion.h1>
-                
-                <motion.h2
-                  className="role"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.9 }}
-                >
-                  {homeData.role}
-                </motion.h2>
-
-                <motion.p
-                  className="intro-text"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.1 }}
-                >
-                  I'm a passionate full stack developer currently pursuing my MCA, 
-                  with hands-on experience in building real-world applications using 
-                  MERN stack, Python, and modern web technologies. I love creating 
-                  solutions that make a difference.
-                </motion.p>
-
+            {/* Hero Section */}
+            <section id="home" className="hero-section">
+              <div className="hero-content">
                 <motion.div
-                  className="intro-stats"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.3 }}
+                  className="profile-section"
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 }}
                 >
-                  <div className="stat">
-                    <Code size={20} />
-                    <span>3+ Projects</span>
-                  </div>
-                  <div className="stat">
-                    <Heart size={20} />
-                    <span>MCA Student</span>
-                  </div>
-                  <div className="stat">
-                    <Coffee size={20} />
-                    <span>Coffee Lover</span>
+                  <div className="profile-image">
+                    <img src={homeData.bannerImage} alt="Haroon Ahmed" />
+                    <div className="image-overlay"></div>
                   </div>
                 </motion.div>
-              </motion.div>
-            </div>
 
-            <motion.div
-              className="scroll-indicator"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.5 }}
-              onClick={scrollToContent}
-            >
-              <span>Scroll to explore</span>
-              <ChevronDown size={20} />
-            </motion.div>
+                <motion.div
+                  className="intro-section"
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <motion.h1
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7 }}
+                  >
+                    Hi, I'm <span className="name-highlight">{homeData.name}</span>
+                  </motion.h1>
+                  
+                  <motion.h2
+                    className="role"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.9 }}
+                  >
+                    {homeData.role}
+                  </motion.h2>
+
+                  <motion.p
+                    className="intro-text"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.1 }}
+                  >
+                    I'm a full stack developer who uses web technologies to build practical and engaging applications that solve real problems. With strong hands-on experience in the MERN stack, Python, and modern web technologies, I focus on writing clean, responsive, and efficient code to bring ideas to life.
+                  </motion.p>
+
+                  <motion.div
+                    className="intro-stats"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.3 }}
+                  >
+                    <div className="stat">
+                      <Code size={20} />
+                      <span>3+ Projects</span>
+                    </div>
+                    <div className="stat">
+                      <Heart size={20} />
+                      <span>MCA Student</span>
+                    </div>
+                    <div className="stat">
+                      <Coffee size={20} />
+                      <span>Coffee Lover</span>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              </div>
+
+              {/* <motion.div
+                className="scroll-indicator"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.5 }}
+                onClick={scrollToAbout}
+              >
+                <span>Scroll to explore</span>
+                <ChevronDown size={20} />
+              </motion.div> */}
+            </section>
+
+            {/* About Section */}
+            <section id="about">
+              <About />
+            </section>
+
+            {/* Skills Section */}
+            <section id="skills">
+              <Skills />
+            </section>
+
+            {/* Projects Section */}
+            <section id="projects">
+              <Projects />
+            </section>
+
+            {/* Resume Section */}
+            <section id="resume">
+              <Resume />
+            </section>
+
+            <section id="contact">
+              <Email />
+            </section>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Content sections for scrolling */}
-      {showReal && (
-        <motion.div
-          className="content-sections"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2 }}
-        >
-          <section className="welcome-section">
-            <div className="container">
-              <motion.h2
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
-              >
-                Welcome to My Digital Space
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                viewport={{ once: true }}
-              >
-                Here you'll find my journey as a developer, the projects I've built, 
-                and the skills I've acquired. Feel free to explore and get to know me better!
-              </motion.p>
-            </div>
-          </section>
-        </motion.div>
-      )}
     </div>
   );
 };

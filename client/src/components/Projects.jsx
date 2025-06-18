@@ -62,10 +62,10 @@ const Projects = () => {
         animate="visible"
       >
         <motion.div className="projects-header" variants={itemVariants}>
-          <div className="section-badge">
+          {/* <div className="section-badge">
             <Folder size={16} />
             <span>My Work</span>
-          </div>
+          </div> */}
           <h1>Featured Projects</h1>
           <p className="projects-subtitle">
             A showcase of my recent work and personal projects

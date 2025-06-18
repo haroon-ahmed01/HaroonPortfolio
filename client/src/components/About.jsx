@@ -1,17 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { User, MapPin, Calendar, GraduationCap, Code2, Heart } from 'lucide-react';
-import './About.css';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import {
+  User,
+  MapPin,
+  Calendar,
+  GraduationCap,
+  Code2,
+  Heart,
+  Briefcase,
+} from "lucide-react";
+import "./About.css";
 
 const About = () => {
-  const [aboutData, setAboutData] = useState('');
+  const [aboutData, setAboutData] = useState("");
 
   useEffect(() => {
-    fetch('/api/about')
-      .then(res => res.json())
-      .then(data => setAboutData(data.about))
+    fetch("/api/about")
+      .then((res) => res.json())
+      .then((data) => setAboutData(data.about))
       .catch(() => {
-        setAboutData("I'm a passionate full stack developer with experience in React, Node.js, Django, and machine learning projects. Currently pursuing MCA and worked on real-world projects like Qirat and InventoHub.");
+        setAboutData(`My interest in software development began during my college days, and it gradually grew from a simple curiosity into a clear goal — to one day build my own SaaS product. To achieve that, I started learning full stack web development and applied my skills through internships, where I gained valuable hands-on experience in real-world software projects. Now, I am looking to join a team that values learning, creativity, and innovation — a place where I can grow while contributing meaningfully.`);
       });
   }, []);
 
@@ -20,9 +28,9 @@ const About = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.3
-      }
-    }
+        staggerChildren: 0.3,
+      },
+    },
   };
 
   const itemVariants = {
@@ -30,8 +38,8 @@ const About = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6 }
-    }
+      transition: { duration: 0.6 },
+    },
   };
 
   return (
@@ -49,7 +57,7 @@ const About = () => {
           </div>
           <h1>Get to Know Me Better</h1>
           <p className="about-subtitle">
-            Passionate developer, lifelong learner, and problem solver
+            Passionate developer and problem solver
           </p>
         </motion.div>
 
@@ -64,17 +72,25 @@ const About = () => {
             >
               <h2>My Story</h2>
               <p>{aboutData}</p>
-              
+
               <div className="current-focus">
                 <h3>What I'm Currently Doing</h3>
                 <ul>
                   <li>
-                    <GraduationCap size={16} />
-                    <span>Pursuing Master's in Computer Applications (MCA)</span>
+                    <Briefcase size={16} />
+                    <span>Interning as a Full Stack Developer at Marqwon</span>
+                  </li>
+                  <li>
+                   <GraduationCap size={16} />
+                    <span>
+                      Pursuing Master's in Computer Applications (MCA)
+                    </span>
                   </li>
                   <li>
                     <Code2 size={16} />
-                    <span>Building full-stack applications with MERN stack</span>
+                    <span>
+                      Building full-stack applications with MERN stack
+                    </span>
                   </li>
                   <li>
                     <Heart size={16} />
@@ -99,14 +115,14 @@ const About = () => {
                   <MapPin size={16} />
                   <div>
                     <span className="fact-label">Location</span>
-                    <span className="fact-value">India</span>
+                    <span className="fact-value">Chennai, India</span>
                   </div>
                 </div>
                 <div className="fact-item">
                   <Calendar size={16} />
                   <div>
                     <span className="fact-label">Experience</span>
-                    <span className="fact-value">2+ Years</span>
+                    <span className="fact-value">Currently interning (2+ months experience)</span>
                   </div>
                 </div>
                 <div className="fact-item">
@@ -160,28 +176,37 @@ const About = () => {
               <div className="timeline-marker"></div>
               <div className="timeline-content">
                 <h4>Started MCA Program</h4>
-                <p>Began my Master's journey in Computer Applications, diving deep into advanced programming concepts and software development.</p>
+                <p>
+                  Began my Master's in Computer Applications (Distance) to deepen my understanding of software development and programming.
+                </p>
               </div>
             </div>
             <div className="timeline-item">
               <div className="timeline-marker"></div>
               <div className="timeline-content">
-                <h4>Built InventoHub</h4>
-                <p>Developed a comprehensive inventory management system using Python, Django REST, MySQL, and React with role-based access control.</p>
+                <h4>Joined Maxyfi as a Developer Intern</h4>
+                <p>
+                 Trained as a MERN stack developer at Maxyfi, where I improved core product pages and enhanced the AI chatbot UI using React and Bootstrap.
+                </p>
               </div>
             </div>
             <div className="timeline-item">
               <div className="timeline-marker"></div>
               <div className="timeline-content">
-                <h4>Created ReviewSense</h4>
-                <p>Built an NLP-powered sentiment analysis model for Amazon reviews using Python, Scikit-Learn, and Keras.</p>
+                <h4>Joined Marqwon as a Full Stack Developer Intern</h4>
+                <p>
+                 Currently contributing to small-scale web projects and gaining hands-on experience in real-time product development using the MERN stack.
+                </p>
               </div>
             </div>
             <div className="timeline-item">
               <div className="timeline-marker"></div>
               <div className="timeline-content">
                 <h4>Working on Qirat</h4>
-                <p>Currently developing an interactive Quran learning app with speech recognition using the MERN stack and Tailwind CSS.</p>
+                <p>
+                  Currently developing an interactive Quran learning app with
+                  speech recognition using the MERN stack and Tailwind CSS.
+                </p>
               </div>
             </div>
           </div>

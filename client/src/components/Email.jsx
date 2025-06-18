@@ -1,32 +1,32 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Mail, Send, CheckCircle, AlertCircle } from 'lucide-react';
-import './Email.css';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Mail, Send, CheckCircle, AlertCircle } from "lucide-react";
+import "./Email.css";
 
 const Email = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: ''
+    name: "",
+    email: "",
   });
-  const [status, setStatus] = useState('idle'); // idle, loading, success, error
-  const [message, setMessage] = useState('');
+  const [status, setStatus] = useState("idle"); // idle, loading, success, error
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus('loading');
+    setStatus("loading");
 
     try {
-      const response = await fetch('/api/send-email', {
-        method: 'POST',
+      const response = await fetch("/api/send-email", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
@@ -34,22 +34,22 @@ const Email = () => {
       const result = await response.json();
 
       if (response.ok) {
-        setStatus('success');
-        setMessage('Thank you! Your message has been sent successfully.');
-        setFormData({ name: '', email: '' });
+        setStatus("success");
+        setMessage("Thank you! Your message has been sent successfully.");
+        setFormData({ name: "", email: "" });
       } else {
-        setStatus('error');
-        setMessage(result.message || 'Something went wrong. Please try again.');
+        setStatus("error");
+        setMessage(result.message || "Something went wrong. Please try again.");
       }
     } catch (error) {
-      setStatus('error');
-      setMessage('Network error. Please check your connection and try again.');
+      setStatus("error");
+      setMessage("Network error. Please check your connection and try again.");
     }
 
     // Reset status after 5 seconds
     setTimeout(() => {
-      setStatus('idle');
-      setMessage('');
+      setStatus("idle");
+      setMessage("");
     }, 5000);
   };
 
@@ -58,9 +58,9 @@ const Email = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.3
-      }
-    }
+        staggerChildren: 0.3,
+      },
+    },
   };
 
   const itemVariants = {
@@ -68,8 +68,8 @@ const Email = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6 }
-    }
+      transition: { duration: 0.6 },
+    },
   };
 
   return (
@@ -81,13 +81,14 @@ const Email = () => {
         animate="visible"
       >
         <motion.div className="email-header" variants={itemVariants}>
-          <div className="section-badge">
+          {/* <div className="section-badge">
             <Mail size={16} />
             <span>Get In Touch</span>
-          </div>
+          </div> */}
           <h1>Let's Connect!</h1>
           <p className="email-subtitle">
-            I'd love to hear from you. Send me a message and I'll get back to you soon!
+            I'd love to hear from you. Send me a message and I'll get back to
+            you soon!
           </p>
         </motion.div>
 
@@ -103,7 +104,7 @@ const Email = () => {
                 onChange={handleChange}
                 required
                 placeholder="Enter your full name"
-                disabled={status === 'loading'}
+                disabled={status === "loading"}
               />
             </div>
 
@@ -117,16 +118,16 @@ const Email = () => {
                 onChange={handleChange}
                 required
                 placeholder="Enter your email address"
-                disabled={status === 'loading'}
+                disabled={status === "loading"}
               />
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className={`submit-button ${status}`}
-              disabled={status === 'loading'}
+              disabled={status === "loading"}
             >
-              {status === 'loading' ? (
+              {status === "loading" ? (
                 <>
                   <div className="spinner"></div>
                   <span>Sending...</span>
@@ -146,7 +147,7 @@ const Email = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
               >
-                {status === 'success' ? (
+                {status === "success" ? (
                   <CheckCircle size={20} />
                 ) : (
                   <AlertCircle size={20} />
@@ -162,13 +163,28 @@ const Email = () => {
           <div className="contact-methods">
             <div className="contact-method">
               <h4>Email</h4>
-              <p>haroon.ahmed@example.com</p>
+              <p>haroonahmedthedev@gmail.com</p>
             </div>
-            <div className="contact-method">
+            <div
+              className="contact-method"
+              onClick={() =>
+                window.open(
+                  "https://www.linkedin.com/in/haroon--ahmed/",
+                  "_blank"
+                )
+              }
+              style={{ cursor: "pointer" }}
+            >
               <h4>LinkedIn</h4>
               <p>Connect with me professionally</p>
             </div>
-            <div className="contact-method">
+            <div
+              className="contact-method"
+              onClick={() =>
+                window.open("https://github.com/haroon-ahmed01", "_blank")
+              }
+              style={{ cursor: "pointer" }}
+            >
               <h4>GitHub</h4>
               <p>Check out my code and projects</p>
             </div>

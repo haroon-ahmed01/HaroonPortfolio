@@ -43,10 +43,10 @@ const Resume = () => {
         animate="visible"
       >
         <motion.div className="resume-header" variants={itemVariants}>
-          <div className="section-badge">
+          {/* <div className="section-badge">
             <FileText size={16} />
             <span>Resume</span>
-          </div>
+          </div> */}
           <h1>My Professional Resume</h1>
           <p className="resume-subtitle">
             Download or view my complete professional background and experience
@@ -99,7 +99,7 @@ const Resume = () => {
             </div>
             <div className="highlight-item">
               <h4>Experience</h4>
-              <p>2+ years of hands-on development experience with modern technologies</p>
+              <p>Gained hands-on development experience at Maxyfi and Marqwon using MERN stack</p>
             </div>
             <div className="highlight-item">
               <h4>Projects</h4>
@@ -111,14 +111,14 @@ const Resume = () => {
             </div>
           </div>
         </motion.div>
-
+{/* 
         <motion.div className="contact-cta" variants={itemVariants}>
           <h3>Interested in working together?</h3>
           <p>Let's discuss how I can contribute to your team and projects</p>
           <a href="/contact" className="contact-button">
             Get In Touch
           </a>
-        </motion.div>
+        </motion.div> */}
       </motion.div>
     </div>
   );
