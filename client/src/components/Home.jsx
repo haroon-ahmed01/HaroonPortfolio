@@ -7,75 +7,70 @@ import Projects from './Projects';
 import Resume from './Resume';
 import Email from './Email';
 import './Home.css';
+import portfolioBanner from '../assets/portfolioBanner.jpeg'; // Local image import
 
 const Home = () => {
-  const [showLoading, setShowLoading] = useState(() => {
-    // Check if there's a hash on initial load
-    return !window.location.hash;
-  });
+  const [showLoading, setShowLoading] = useState(() => !window.location.hash);
   const [showCartoon, setShowCartoon] = useState(false);
-  const [showReal, setShowReal] = useState(() => {
-    // If there's a hash, start with real content
-    return !!window.location.hash;
+  const [showReal, setShowReal] = useState(() => !!window.location.hash);
+  const [homeData, setHomeData] = useState({
+    name: "Haroon Ahmed",
+    role: "Full Stack Developer (MERN / Python)",
+    bannerImage: portfolioBanner,
+    fallbackImage: "https://images.pexels.com/photos/4974912/pexels-photo-4974912.jpeg?auto=compress&cs=tinysrgb&w=400"
   });
-  const [homeData, setHomeData] = useState({});
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
-    // Check if there's a hash in URL (coming from another page)
     const hasHash = window.location.hash;
-    
+
     if (!hasHash) {
-      // Only show animations if no hash (normal first visit)
       setTimeout(() => {
         setShowLoading(false);
         setShowCartoon(true);
       }, 2000);
     }
 
-    // Fetch data
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/home`)
-      .then(res => res.json())
-      .then(data => setHomeData(data))
-      .catch(() => {
-        setHomeData({
-          name: "Haroon Ahmed",
-          role: "Full Stack Developer (MERN / Python)",
-          bannerImage: "https://via.placeholder.com/400"
-        });
-      });
+    const fetchHomeData = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/home`);
+        if (res.ok) {
+          const data = await res.json();
+          setHomeData(prev => ({
+            ...prev,
+            name: data.name || prev.name,
+            role: data.role || prev.role
+          }));
+        }
+      } catch (error) {
+        console.log('Fallback: using local homeData');
+      }
+    };
+
+    fetchHomeData();
   }, []);
 
-  // Handle hash navigation when component loads
   useEffect(() => {
-    const hash = window.location.hash.substring(1); // Remove the '#'
+    const hash = window.location.hash.substring(1);
     if (hash) {
-      // Ensure we're showing real content
       if (!showReal) {
         setShowLoading(false);
         setShowCartoon(false);
         setShowReal(true);
       }
-      
-      // Scroll to section after a brief delay
       const scrollToSection = () => {
         const element = document.getElementById(hash);
         if (element) {
-          element.scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
-          });
-          // Clear the hash from URL after navigation
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
           setTimeout(() => {
             window.history.replaceState(null, null, '/');
           }, 1000);
         }
       };
-      
-      // If content is already showing, scroll immediately
+
       if (showReal) {
         setTimeout(scrollToSection, 100);
       } else {
-        // Wait for content to show
         setTimeout(scrollToSection, 500);
       }
     }
@@ -86,15 +81,8 @@ const Home = () => {
     setTimeout(() => setShowReal(true), 500);
   };
 
-  const scrollToAbout = () => {
-    const aboutSection = document.getElementById('about');
-    if (aboutSection) {
-      aboutSection.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
-  };
+  const handleImageError = () => setImageError(true);
+  const getImageSrc = () => imageError ? homeData.fallbackImage : homeData.bannerImage;
 
   return (
     <div className="home-container">
@@ -150,15 +138,8 @@ const Home = () => {
                 onClick={handleCartoonClick}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                animate={{ 
-                  y: [0, -10, 0],
-                  rotate: [0, 2, -2, 0]
-                }}
-                transition={{ 
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
+                animate={{ y: [0, -10, 0], rotate: [0, 2, -2, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               >
                 <div className="cartoon-face">
                   <div className="cartoon-eyes">
@@ -171,7 +152,7 @@ const Home = () => {
                   <Coffee className="cartoon-icon" size={24} />
                 </div>
               </motion.div>
-              
+
               <motion.div
                 className="speech-bubble"
                 initial={{ opacity: 0, y: 20 }}
@@ -193,7 +174,6 @@ const Home = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            {/* Hero Section */}
             <section id="home" className="hero-section">
               <div className="hero-content">
                 <motion.div
@@ -203,7 +183,12 @@ const Home = () => {
                   transition={{ delay: 0.3 }}
                 >
                   <div className="profile-image">
-                    <img src={homeData.bannerImage} alt="Haroon Ahmed" />
+                    <img
+                      src={getImageSrc()}
+                      alt="Haroon Ahmed"
+                      onError={handleImageError}
+                      loading="lazy"
+                    />
                     <div className="image-overlay"></div>
                   </div>
                 </motion.div>
@@ -221,7 +206,7 @@ const Home = () => {
                   >
                     Hi, I'm <span className="name-highlight">{homeData.name}</span>
                   </motion.h1>
-                  
+
                   <motion.h2
                     className="role"
                     initial={{ opacity: 0, y: 20 }}
@@ -246,57 +231,19 @@ const Home = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.3 }}
                   >
-                    <div className="stat">
-                      <Code size={20} />
-                      <span>3+ Projects</span>
-                    </div>
-                    <div className="stat">
-                      <Heart size={20} />
-                      <span>MCA Student</span>
-                    </div>
-                    <div className="stat">
-                      <Coffee size={20} />
-                      <span>Coffee Lover</span>
-                    </div>
+                    <div className="stat"><Code size={20} /><span>3+ Projects</span></div>
+                    <div className="stat"><Heart size={20} /><span>MCA Student</span></div>
+                    <div className="stat"><Coffee size={20} /><span>Coffee Lover</span></div>
                   </motion.div>
                 </motion.div>
               </div>
-
-              {/* <motion.div
-                className="scroll-indicator"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.5 }}
-                onClick={scrollToAbout}
-              >
-                <span>Scroll to explore</span>
-                <ChevronDown size={20} />
-              </motion.div> */}
             </section>
 
-            {/* About Section */}
-            <section id="about">
-              <About />
-            </section>
-
-            {/* Skills Section */}
-            <section id="skills">
-              <Skills />
-            </section>
-
-            {/* Projects Section */}
-            <section id="projects">
-              <Projects />
-            </section>
-
-            {/* Resume Section */}
-            <section id="resume">
-              <Resume />
-            </section>
-
-            <section id="contact">
-              <Email />
-            </section>
+            <section id="about"><About /></section>
+            <section id="skills"><Skills /></section>
+            <section id="projects"><Projects /></section>
+            <section id="resume"><Resume /></section>
+            <section id="contact"><Email /></section>
           </motion.div>
         )}
       </AnimatePresence>

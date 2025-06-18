@@ -1,19 +1,54 @@
- import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Download, FileText, Eye } from 'lucide-react';
+import { Download, FileText, Eye, AlertCircle } from 'lucide-react';
 import './Resume.css';
 
 const Resume = () => {
-  const [resumeURL, setResumeURL] = useState('');
+  const [resumeData, setResumeData] = useState({
+    resumeURL: "/Haroon_Ahmed_Resume.pdf", // Direct path to public folder
+    fallbackURL: "https://drive.google.com/file/d/1SNkwxNiTFcaRwcYprkhUh59NcLKdOHZO/view?usp=sharing",
+    directDownload: "/Haroon_Ahmed_Resume.pdf" // Direct download from public folder
+  });
+  const [loading, setLoading] = useState(false); // No need to load since we're using local files
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/resume`)
-      .then(res => res.json())
-      .then(data => setResumeURL(data.resumeURL))
-      .catch(() => {
-        setResumeURL("https://drive.google.com/file/d/1SNkwxNiTFcaRwcYprkhUh59NcLKdOHZO/view?usp=sharing");
-      });
+    // Check if the local PDF exists
+    const checkPDFExists = async () => {
+      try {
+        const response = await fetch('/Haroon_Ahmed_Resume.pdf', { method: 'HEAD' });
+        if (!response.ok) {
+          throw new Error('PDF not found locally');
+        }
+      } catch (err) {
+        console.log('Local PDF not found, using fallback');
+        setError(true);
+      }
+    };
+
+    checkPDFExists();
   }, []);
+
+  const handleViewResume = () => {
+    const url = error ? resumeData.fallbackURL : resumeData.resumeURL;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleDownloadResume = () => {
+    if (error) {
+      // Use Google Drive fallback
+      window.open(resumeData.fallbackURL, '_blank', 'noopener,noreferrer');
+    } else {
+      // Direct download from public folder
+      const link = document.createElement('a');
+      link.href = resumeData.directDownload;
+      link.download = 'Haroon_Ahmed_Resume.pdf';
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -34,6 +69,22 @@ const Resume = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="resume-container">
+        <div className="resume-loading">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          >
+            <FileText size={40} />
+          </motion.div>
+          <p>Loading resume...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="resume-container">
       <motion.div
@@ -43,14 +94,16 @@ const Resume = () => {
         animate="visible"
       >
         <motion.div className="resume-header" variants={itemVariants}>
-          {/* <div className="section-badge">
-            <FileText size={16} />
-            <span>Resume</span>
-          </div> */}
           <h1>My Professional Resume</h1>
           <p className="resume-subtitle">
             Download or view my complete professional background and experience
           </p>
+          {error && (
+            <div className="error-notice">
+              <AlertCircle size={16} />
+              <span>Using Google Drive backup link</span>
+            </div>
+          )}
         </motion.div>
 
         <motion.div className="resume-card" variants={itemVariants}>
@@ -65,28 +118,28 @@ const Resume = () => {
                 <span>PDF Document</span>
                 <span>•</span>
                 <span>Updated Recently</span>
+                {error && <span>• Google Drive Version</span>}
               </div>
             </div>
           </div>
 
           <div className="resume-actions">
-            <a 
-              href={resumeURL} 
-              target="_blank" 
-              rel="noopener noreferrer"
+            <button 
+              onClick={handleViewResume}
               className="resume-button view-button"
+              type="button"
             >
               <Eye size={20} />
               <span>View Resume</span>
-            </a>
-            <a 
-              href={resumeURL} 
-              download="Haroon_Ahmed_Resume.pdf"
+            </button>
+            <button 
+              onClick={handleDownloadResume}
               className="resume-button download-button"
+              type="button"
             >
               <Download size={20} />
               <span>Download PDF</span>
-            </a>
+            </button>
           </div>
         </motion.div>
 
@@ -111,14 +164,6 @@ const Resume = () => {
             </div>
           </div>
         </motion.div>
-{/* 
-        <motion.div className="contact-cta" variants={itemVariants}>
-          <h3>Interested in working together?</h3>
-          <p>Let's discuss how I can contribute to your team and projects</p>
-          <a href="/contact" className="contact-button">
-            Get In Touch
-          </a>
-        </motion.div> */}
       </motion.div>
     </div>
   );
