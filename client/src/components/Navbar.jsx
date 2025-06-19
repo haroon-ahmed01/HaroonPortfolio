@@ -87,15 +87,15 @@ const Navbar = () => {
       <nav className={`navbar ${isScrolled ? "scrolled" : ""}`}>
         <div className="navbar-container">
           {/* Logo */}
-          {/* <button
+          <button
             onClick={() => handleNavClick("home")}
             className="navbar-logo"
           >
             <div className="logo-icon">
               <User className="logo-text" size={20} />
             </div>
-            <span className="logo-name">Haroon</span>
-          </button> */}
+            <span className="logo-name">portfolio</span>
+          </button>
 
           {/* Desktop Navigation */}
           <div className="navbar-menu">
