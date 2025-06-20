@@ -115,10 +115,10 @@ const Resume = () => {
               <h3>Haroon Ahmed - Resume</h3>
               <p>Full Stack Developer (MERN / Python)</p>
               <div className="resume-details">
-                <span>PDF Document</span>
+                {/* <span>PDF Document</span>
                 <span>•</span>
                 <span>Updated Recently</span>
-                {error && <span>• Google Drive Version</span>}
+                {error && <span>• Google Drive Version</span>} */}
               </div>
             </div>
           </div>

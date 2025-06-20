@@ -17,7 +17,6 @@ const Home = () => {
     name: "Haroon Ahmed",
     role: "Full Stack Developer (MERN / Python)",
     bannerImage: "/banner.jpeg",
-    // fallbackImage: "https://images.pexels.com/photos/4974912/pexels-photo-4974912.jpeg?auto=compress&cs=tinysrgb&w=400"
   });
   const [imageError, setImageError] = useState(false);
 
@@ -231,9 +230,6 @@ const Home = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.3 }}
                   >
-                    <div className="stat"><Code size={20} /><span>3+ Projects</span></div>
-                    <div className="stat"><Heart size={20} /><span>MCA Student</span></div>
-                    <div className="stat"><Coffee size={20} /><span>Coffee Lover</span></div>
                   </motion.div>
                 </motion.div>
               </div>
